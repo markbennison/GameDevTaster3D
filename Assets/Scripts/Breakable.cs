@@ -5,27 +5,33 @@ public class Breakable : MonoBehaviour
 {
 	[SerializeField] GameObject brokenObject;
 	[SerializeField] float breakForce = 1f;
-	[SerializeField] float collisionMultiplier = 100f;
+	[SerializeField] float collisionMultiplier = 30f;
 
 	bool broken = false;
 
 	void OnCollisionEnter(Collision collision)
 	{
+		Debug.Log("Collision Detected.");
 		if (!broken)
 		{
-			if(collision.relativeVelocity.magnitude >= breakForce)
+			Debug.Log("Not Broken.");
+			if (collision.relativeVelocity.magnitude >= breakForce)
 			{
+				Debug.Log("BREAKING!");
 				broken = true;
-				var replacement = Instantiate(brokenObject, transform.position, transform.rotation);
-				var rbs = replacement.GetComponentsInChildren<Rigidbody>();
-				foreach (var rb in rbs)
+
+				GameObject replacement = Instantiate(brokenObject, transform.position, transform.rotation);
+				Rigidbody[] rigidbodies = replacement.GetComponentsInChildren<Rigidbody>();
+
+				foreach (Rigidbody rigidbody in rigidbodies)
 				{
-					rb.AddExplosionForce(collision.relativeVelocity.magnitude * collisionMultiplier, collision.contacts[0].point, 2);
+					rigidbody.AddExplosionForce(collision.relativeVelocity.magnitude * collisionMultiplier, 
+												collision.contacts[0].point, 
+												2);
 				}
 
 				Destroy(gameObject);
 			}
 		}
 	}
-
 }
