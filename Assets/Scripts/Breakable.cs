@@ -1,5 +1,4 @@
 using UnityEngine;
-//https://www.youtube.com/watch?v=-f--hnAHGQI
 
 public class Breakable : MonoBehaviour
 {
@@ -7,7 +6,14 @@ public class Breakable : MonoBehaviour
 	[SerializeField] float breakForce = 1f;
 	[SerializeField] float collisionMultiplier = 30f;
 
+	Scoring scoringComponent;
+
 	bool broken = false;
+
+	void Start()
+	{
+		scoringComponent = GameObject.FindGameObjectWithTag("GameManager").GetComponent<Scoring>();
+	}
 
 	void OnCollisionEnter(Collision collision)
 	{
@@ -31,6 +37,8 @@ public class Breakable : MonoBehaviour
 				}
 
 				Destroy(gameObject);
+
+				scoringComponent.SendMessage("IncrementScore");
 			}
 		}
 	}
